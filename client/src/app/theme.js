@@ -1,5 +1,6 @@
 import { createTheme } from "@mui/material";
 
+// Define custom colors
 const colors = {
   primary: "#3f51b5",
   secondary: "#4caf50",
@@ -7,8 +8,10 @@ const colors = {
   background: "#fafbff",
 };
 
+// Create MUI theme using createTheme function
 const theme = createTheme({
   palette: {
+    // Define primary, secondary, tertiary, and background colors
     primary: {
       main: colors.primary,
     },
@@ -24,10 +27,11 @@ const theme = createTheme({
   },
 
   components: {
+    // Customize MUI components
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 15,
+          borderRadius: 15, // Set border radius for all buttons
         },
       },
     },
@@ -35,7 +39,7 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 15,
+          borderRadius: 15, // Set border radius for all outlined inputs
         },
       },
     },
@@ -43,14 +47,14 @@ const theme = createTheme({
     MuiInputBase: {
       styleOverrides: {
         root: {
-          backgroundColor: "#fff",
+          backgroundColor: "#fff", // Set background color for all input bases
         },
       },
     },
 
     MuiCircularProgress: {
       defaultProps: {
-        size: "1.5rem",
+        size: "1.5rem", // Set default size for CircularProgress
       },
     },
   },

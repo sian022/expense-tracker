@@ -30,18 +30,21 @@ import { dummyExpenses } from "../../utils/dummy";
 const ExpensesTable = () => {
   const currency = useCurrency();
 
+  // Redux state for selected currency
   const selectedCurrency = useSelector((state) => state.currency.currency);
 
+  // Local state for pagination, search, and active status filter
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
   const [isActive, setIsActive] = useState(true);
 
+  // Calculate average expense amount
   const averageExpense = dummyExpenses.reduce((acc, expense) => {
     return (acc + expense.amount) / dummyExpenses.length;
   }, 0);
 
-  // Handle Chip
+  // Determine relative cost label, color, and icon for each expense
   const handleRelativeCost = (amount) => {
     if (amount > averageExpense) {
       return {
@@ -66,8 +69,10 @@ const ExpensesTable = () => {
 
   return (
     <Stack bgcolor="#fff" borderRadius="15px" flex={1} padding={2}>
+      {/* Search and filter section */}
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack direction="row" spacing={2}>
+          {/* Search input */}
           <TextField
             type="search"
             size="small"
@@ -83,6 +88,7 @@ const ExpensesTable = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
 
+          {/* Checkbox to toggle active/inactive expenses */}
           <FormControlLabel
             control={
               <Checkbox
@@ -94,11 +100,13 @@ const ExpensesTable = () => {
           />
         </Stack>
 
+        {/* View options */}
         <Stack direction="row" spacing={1} alignItems="center">
           View by weekly or all expenses
         </Stack>
       </Stack>
 
+      {/* Table section */}
       <TableContainer sx={{ flex: 1 }}>
         <Table>
           <TableHead>
@@ -111,6 +119,7 @@ const ExpensesTable = () => {
             </TableRow>
           </TableHead>
 
+          {/* Table body with expense data */}
           <TableBody>
             {dummyExpenses.map((expense) => (
               <TableRow key={expense.id}>
@@ -124,12 +133,14 @@ const ExpensesTable = () => {
                   {currency(expense.amount, selectedCurrency)}
                 </TableCell>
                 <TableCell>
+                  {/* Chip indicating relative cost */}
                   <Chip
                     variant="outlined"
                     {...handleRelativeCost(expense.amount)}
                   />
                 </TableCell>
 
+                {/* Actions column */}
                 <TableCell>
                   <IconButton color="primary">
                     <MoreVert />
@@ -140,6 +151,8 @@ const ExpensesTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Pagination section */}
       <TablePagination
         component="div"
         count={dummyExpenses.length || 0}

@@ -15,6 +15,7 @@ const Modal = ({
   title = "Title",
   ...props
 }) => {
+  // Style object for the modal box
   const style = {
     position: "absolute",
     top: "50%",
@@ -29,22 +30,26 @@ const Modal = ({
 
   return (
     <MuiModal open={open} onClose={onClose} {...props}>
+      {/* Modal content */}
       <Box sx={style}>
+        {/* Header section with title and close button */}
         <Stack
           direction="row"
           justifyContent="space-between"
           alignItems="center"
           mb={2}
         >
-          <Typography variant="h5" fontFamily="Montserrat" fontWeight="500">
+          <Typography variant="h5" fontFamily="Montserrat" fontWeight={500}>
             {title}
           </Typography>
 
+          {/* Close button */}
           <IconButton onClick={onClose}>
             <Close />
           </IconButton>
         </Stack>
 
+        {/* Modal body - children passed as content */}
         {children}
       </Box>
     </MuiModal>

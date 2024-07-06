@@ -9,13 +9,15 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // Get the selected currency from Redux store
   const selectedCurrency = useSelector((state) => state.currency.currency);
 
+  // Handle click on logo to navigate to home
   const handleLogoClick = () => {
     navigate("/");
   };
 
-  // Currency change handler
+  // Handle currency change
   const handleCurrencyChange = (e) => {
     dispatch(setCurrency(e.target.value));
   };
@@ -31,6 +33,7 @@ const Navbar = () => {
       px={3}
       py={2}
     >
+      {/* Logo and app name section */}
       <Stack
         direction="row"
         alignItems="center"
@@ -43,13 +46,14 @@ const Navbar = () => {
         <Typography
           variant="h4"
           fontFamily="Montserrat"
-          fontWeight="700"
+          fontWeight={700}
           color="primary.main"
         >
           Expense Tracker
         </Typography>
       </Stack>
 
+      {/* Currency selector section */}
       <TextField
         select
         size="small"
@@ -58,6 +62,7 @@ const Navbar = () => {
         onChange={handleCurrencyChange}
         value={selectedCurrency}
       >
+        {/* Generate menu items for each currency */}
         {currencies.map((c) => (
           <MenuItem key={c.currency} value={c.currency}>
             <Stack direction="row" spacing={2} alignItems="center">
