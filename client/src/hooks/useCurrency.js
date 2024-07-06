@@ -10,6 +10,8 @@ const useCurrency = () => {
     const convertedAmount =
       amount * currencies.find((c) => c.currency === currency).conversionRate;
 
+    console.log(convertedAmount);
+
     // Format the converted amount as currency with US locale
     return convertedAmount.toLocaleString("en-US", {
       style: "currency",

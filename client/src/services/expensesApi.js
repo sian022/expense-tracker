@@ -25,9 +25,10 @@ const expensesApi = api
       }),
 
       getTotalExpenses: builder.query({
-        query: () => ({
+        query: (params) => ({
           url: "/expenses/total",
           method: "GET",
+          params,
         }),
         providesTags: ["expensesTotal"],
       }),

@@ -126,8 +126,11 @@ const ExpenseController = {
     try {
       const { isActive } = req.query;
 
-      // Set the where condition based on the isActive query parameter
-      const whereCondition = isActive === undefined ? {} : { isActive };
+      // Convert isActive to a boolean if it is not undefined
+      let whereCondition = {};
+      if (isActive !== undefined) {
+        whereCondition.isActive = isActive === "true";
+      }
 
       // Get the total expenses
       const totalExpenses = await Expense.sum("amount", {

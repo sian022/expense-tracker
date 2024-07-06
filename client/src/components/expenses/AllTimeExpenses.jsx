@@ -39,7 +39,7 @@ const AllTimeExpenses = () => {
         letterSpacing="1px"
         lineHeight="80%"
       >
-        {currency(data?.totalExpenses, selectedCurrency)}
+        {currency(data?.totalExpenses || 0, selectedCurrency)}
       </Typography>
 
       {/* Title for total expenses */}
