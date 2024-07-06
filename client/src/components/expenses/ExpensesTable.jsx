@@ -15,7 +15,7 @@ import {
   TextField,
 } from "@mui/material";
 import moment from "moment";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import useCurrency from "../../hooks/useCurrency";
 import {
   Archive,
@@ -34,11 +34,13 @@ import {
 import Actions from "../common/Actions";
 import { setIsFormEdit, setSelectedRow } from "../../slices/tableSlice";
 import useToast from "../../hooks/useToast";
+import useDebounce from "../../hooks/useDebounce";
 
 const ExpensesTable = ({ openForm }) => {
   const dispatch = useDispatch();
   const currency = useCurrency();
   const toast = useToast();
+  const debounce = useDebounce();
 
   // Redux state for selected currency
   const selectedCurrency = useSelector((state) => state.currency.currency);
@@ -66,27 +68,30 @@ const ExpensesTable = ({ openForm }) => {
   }, 0);
 
   // Determine relative cost label, color, and icon for each expense
-  const handleRelativeCost = (amount) => {
-    if (amount > averageExpense) {
-      return {
-        label: "More than average",
-        color: "error",
-        icon: <ArrowUpward />,
-      };
-    } else if (amount === averageExpense) {
-      return {
-        label: "Equal to average",
-        color: "primary",
-        icon: <HorizontalRule />,
-      };
-    } else {
-      return {
-        label: "Less than average",
-        color: "success",
-        icon: <ArrowDownward />,
-      };
-    }
-  };
+  const handleRelativeCost = useCallback(
+    (amount) => {
+      if (amount > averageExpense) {
+        return {
+          label: "More than average",
+          color: "error",
+          icon: <ArrowUpward />,
+        };
+      } else if (amount === averageExpense) {
+        return {
+          label: "Equal to average",
+          color: "primary",
+          icon: <HorizontalRule />,
+        };
+      } else {
+        return {
+          label: "Less than average",
+          color: "success",
+          icon: <ArrowDownward />,
+        };
+      }
+    },
+    [averageExpense]
+  );
 
   // Handle archive/restore action for each expense
   const handleArchiveRestore = async () => {
@@ -143,8 +148,7 @@ const ExpensesTable = ({ openForm }) => {
                 </InputAdornment>
               ),
             }}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => debounce(() => setSearch(e.target.value), 300)}
           />
 
           {/* Checkbox to toggle active/inactive expenses */}
