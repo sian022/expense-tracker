@@ -192,7 +192,7 @@ const ExpensesTable = ({ openForm }) => {
               slotProps={{
                 textField: {
                   size: "small",
-                  sx: { minWidth: "65px", width: "100px" },
+                  sx: { minWidth: "100px", width: "100px" },
                 },
                 actionBar: {
                   actions: ["today", "clear"],
