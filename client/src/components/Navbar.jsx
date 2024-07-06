@@ -1,13 +1,23 @@
-import { MenuItem, Stack, TextField, Typography } from "@mui/material";
 import logo from "../assets/images/logo-no-bg.png";
+import { MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import currencies from "../utils/currencies";
+import { setCurrency } from "../slices/currencySlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const selectedCurrency = useSelector((state) => state.currency.currency);
 
   const handleLogoClick = () => {
     navigate("/");
+  };
+
+  // Currency change handler
+  const handleCurrencyChange = (e) => {
+    dispatch(setCurrency(e.target.value));
   };
 
   return (
@@ -45,6 +55,8 @@ const Navbar = () => {
         size="small"
         sx={{ width: "140px" }}
         placeholder="Currency"
+        onChange={handleCurrencyChange}
+        value={selectedCurrency}
       >
         {currencies.map((c) => (
           <MenuItem key={c.currency} value={c.currency}>
