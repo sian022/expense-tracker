@@ -6,11 +6,14 @@ import ExpensesTable from "../components/expenses/ExpensesTable";
 import { Add } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { setIsFormEdit, setSelectedRow } from "../slices/tableSlice";
+import { useTheme } from "@emotion/react";
 
 const ExpensesPage = () => {
   const dispatch = useDispatch();
+  const theme = useTheme();
 
-  const matches = useMediaQuery("(min-width:450px)");
+  // Media query for responsive design
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Custom hook for managing modal state
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,9 +32,10 @@ const ExpensesPage = () => {
       <Stack gap={2} flex={1}>
         {/* Stack for displaying total expenses and add expense button */}
         <Stack
-          direction="row"
+          direction={!isSmall ? "row" : "column"}
           justifyContent="space-between"
           alignItems="center"
+          gap={!isSmall ? 0 : 1}
         >
           {/* AllTimeExpenses component displaying total expenses */}
           <AllTimeExpenses />
@@ -42,8 +46,10 @@ const ExpensesPage = () => {
             onClick={handleAddExpense}
             endIcon={<Add />}
             size="large"
+            fullWidth={!!isSmall}
           >
-            {matches && "Add Expense"}
+            {/* {matches && "Add Expense"} */}
+            Add Expense
           </Button>
         </Stack>
 

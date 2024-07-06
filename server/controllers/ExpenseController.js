@@ -1,4 +1,4 @@
-const { Op, fn, col } = require("sequelize");
+const { Op, fn, col, where } = require("sequelize");
 const Expense = require("../models/ExpenseModel");
 
 const ExpenseController = {
@@ -35,15 +35,18 @@ const ExpenseController = {
         search = "",
         isActive,
         isWeek,
+        year,
       } = req.query;
       const offset = (page - 1) * pageSize;
 
+      // Set the where condition based on the search query parameter
       const searchCondition = search
         ? {
             [Op.or]: [{ description: { [Op.like]: `%${search}%` } }],
           }
         : {};
 
+      // Compare isActive with isActive column
       const isActiveCondition =
         isActive === "true" || isActive === "false"
           ? {
@@ -51,9 +54,19 @@ const ExpenseController = {
             }
           : {};
 
+      // Compare year with date column
+      const yearCondition = year
+        ? {
+            [Op.and]: [
+              where(fn("strftime", "%Y", col("date")), year.toString()),
+            ],
+          }
+        : {};
+
       const whereCondition = {
         ...searchCondition,
         ...isActiveCondition,
+        ...yearCondition,
       };
 
       let expenses;

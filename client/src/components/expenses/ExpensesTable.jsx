@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import {
   Checkbox,
   Chip,
@@ -18,8 +19,6 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import moment from "moment";
-import { useCallback, useState } from "react";
-import useCurrency from "../../hooks/useCurrency";
 import {
   Archive,
   ArrowDownward,
@@ -38,12 +37,18 @@ import Actions from "../common/Actions";
 import { setIsFormEdit, setSelectedRow } from "../../slices/tableSlice";
 import useToast from "../../hooks/useToast";
 import useDebounce from "../../hooks/useDebounce";
+import useCurrency from "../../hooks/useCurrency";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 const ExpensesTable = ({ openForm }) => {
   const dispatch = useDispatch();
   const currency = useCurrency();
   const toast = useToast();
   const debounce = useDebounce();
+
+  // State for year filter
+  const [year, setYear] = useState(null);
 
   // Media query for responsive design
   const isMedium = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -61,27 +66,27 @@ const ExpensesTable = ({ openForm }) => {
   const [isActive, setIsActive] = useState(true);
   const [viewMode, setViewMode] = useState("All Expenses");
 
+  // Determine if view mode is weekly
   const isWeek = viewMode === "Weekly";
 
-  // RTK Query hook to fetch expenses
+  // Fetch expenses data using RTK Query hook
   const { data, isFetching } = useGetAllExpensesQuery({
     search,
     isActive,
-    page: page + 1,
+    page: page + 1, // RTK Query page indexing starts at 1
     pageSize: rowsPerPage,
     isWeek,
+    year: year ? year : "",
   });
   const [updateExpenseStatus] = useUpdateExpenseStatusMutation();
 
-  // Calculate average expense amount
+  // Calculate average expense amount for the current view
   const currentViewAverage =
     data?.expenses.reduce((acc, expense) => {
       return acc + expense.amount;
     }, 0) / data?.expenses.length;
 
-  // const allTimeAverage = data?.allTimeAverage || 0;
-
-  // Determine relative cost label, color, and icon for each expense
+  // Handle relative cost label, color, and icon based on expense amount relative to average
   const handleRelativeCost = useCallback(
     (amount) => {
       if (amount > currentViewAverage) {
@@ -107,12 +112,12 @@ const ExpensesTable = ({ openForm }) => {
     [currentViewAverage]
   );
 
-  // Handle archive/restore action for each expense
+  // Handle archive/restore action for the selected expense
   const handleArchiveRestore = async () => {
     try {
       await updateExpenseStatus(selectedRow?.id).unwrap();
 
-      // Show toast notification
+      // Show success toast notification
       toast({
         message: `Expense ${isActive ? "archived" : "restored"} successfully`,
         type: "success",
@@ -126,17 +131,19 @@ const ExpensesTable = ({ openForm }) => {
     }
   };
 
+  // Handle edit action for the selected expense
   const handleEdit = () => {
     dispatch(setIsFormEdit(true));
     openForm();
   };
 
+  // Calculate total amount of expenses in the current view
   const currentViewTotal = data?.expenses.reduce(
     (acc, expense) => acc + expense.amount,
     0
   );
 
-  // Action buttons for each expense row
+  // Actions available for each expense row
   const actions = [
     {
       label: "Edit",
@@ -153,7 +160,12 @@ const ExpensesTable = ({ openForm }) => {
   return (
     <Stack bgcolor="#fff" borderRadius="15px" flex={1} padding={2} gap={0.5}>
       {/* Search and filter section */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        gap={1}
+      >
         <Stack
           direction="row"
           gap={2}
@@ -174,6 +186,26 @@ const ExpensesTable = ({ openForm }) => {
             }}
             onChange={(e) => debounce(() => setSearch(e.target.value), 300)}
           />
+
+          {/* Date Picker for filtering by year */}
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DatePicker
+              slotProps={{
+                textField: {
+                  size: "small",
+                  sx: { width: "100px" },
+                },
+                actionBar: {
+                  actions: ["today", "clear"],
+                },
+              }}
+              views={["year"]}
+              label="Year"
+              onChange={(date) => setYear(date?.format("YYYY"))}
+              value={year ? moment(year, "YYYY") : null}
+            />
+          </LocalizationProvider>
+
           {/* Checkbox to toggle active/inactive expenses */}
           <Stack direction="row" alignItems="center">
             <Checkbox
@@ -181,7 +213,7 @@ const ExpensesTable = ({ openForm }) => {
               onChange={(e) => setIsActive(!e.target.checked)}
             />
 
-            {isSmall ? <Archive /> : <Typography>Show Archived</Typography>}
+            {isSmall ? <Archive /> : <Typography>Archived</Typography>}
           </Stack>
         </Stack>
 
@@ -194,7 +226,7 @@ const ExpensesTable = ({ openForm }) => {
 
             <Typography
               color="secondary.main"
-              fontWeight={600}
+              fontWeight={700}
               fontSize="1.2rem"
             >
               {currency(currentViewTotal, selectedCurrency)}
@@ -203,12 +235,14 @@ const ExpensesTable = ({ openForm }) => {
         )}
       </Stack>
 
+      {/* View mode options */}
       <Stack
         direction="row"
         alignItems="center"
-        justifyContent={isSmall ? "center" : "flex-start"}
+        justifyContent={isSmall ? "center" : "space-between"}
+        gap={2}
       >
-        {/* View options tabs */}
+        {/* Tabs for switching between All Expenses and Weekly view */}
         <Tabs
           value={viewMode}
           onChange={(_, newValue) => setViewMode(newValue)}
@@ -220,14 +254,15 @@ const ExpensesTable = ({ openForm }) => {
 
       {/* Table section */}
       {isFetching ? (
+        // Loading spinner while fetching data
         <Stack flex={1} alignItems="center" justifyContent="center">
-          <CircularProgress />
+          <CircularProgress size="40px" />
         </Stack>
       ) : (
         <TableContainer
           sx={{
             flex: isSmall ? 1 : "auto",
-            height: "calc(100vh - 420px)",
+            height: "calc(100vh - 420px)", // Adjust height based on screen size
             overflow: "auto",
           }}
         >
@@ -238,7 +273,7 @@ const ExpensesTable = ({ openForm }) => {
                 {!isWeek && <TableCell>Description</TableCell>}
                 <TableCell>Amount</TableCell>
                 <TableCell>Relative Cost</TableCell>
-                <TableCell>Actions</TableCell>
+                {!isWeek && <TableCell>Actions</TableCell>}
               </TableRow>
             </TableHead>
 
@@ -275,9 +310,11 @@ const ExpensesTable = ({ openForm }) => {
                   </TableCell>
 
                   {/* Actions column */}
-                  <TableCell>
-                    <Actions actions={actions} />
-                  </TableCell>
+                  {!isWeek && (
+                    <TableCell>
+                      <Actions actions={actions} />
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

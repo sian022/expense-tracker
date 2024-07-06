@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, useMediaQuery } from "@mui/material";
 import useCurrency from "../../hooks/useCurrency";
 import { useSelector } from "react-redux";
 import { useGetTotalExpensesQuery } from "../../services/expensesApi";
@@ -6,6 +6,9 @@ import { useTheme } from "@emotion/react";
 
 const AllTimeExpenses = () => {
   const theme = useTheme();
+
+  // Media query for responsive design
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Custom hook to format currency
   // We're passing the amount and the global selected currency
@@ -24,6 +27,7 @@ const AllTimeExpenses = () => {
       bgcolor="white"
       border={`1px solid ${theme.palette.secondary.main}`}
       minWidth="200px"
+      width={!isSmall ? "auto" : "100%"}
     >
       {/* Display the formatted total expense amount */}
       <Typography
