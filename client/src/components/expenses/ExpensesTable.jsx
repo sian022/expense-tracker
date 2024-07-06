@@ -33,10 +33,12 @@ import {
 } from "../../services/expensesApi";
 import Actions from "../common/Actions";
 import { setIsFormEdit, setSelectedRow } from "../../slices/tableSlice";
+import useToast from "../../hooks/useToast";
 
 const ExpensesTable = ({ openForm }) => {
   const dispatch = useDispatch();
   const currency = useCurrency();
+  const toast = useToast();
 
   // Redux state for selected currency
   const selectedCurrency = useSelector((state) => state.currency.currency);
@@ -90,24 +92,36 @@ const ExpensesTable = ({ openForm }) => {
   const handleArchiveRestore = async () => {
     try {
       await updateExpenseStatus(selectedRow?.id).unwrap();
+
+      // Show toast notification
+      toast({
+        message: `Expense ${isActive ? "archived" : "restored"} successfully`,
+        type: "success",
+      });
     } catch (error) {
-      console.error(error);
+      // Show error toast notification
+      toast({
+        message: error?.data?.message || "An error occurred. Please try again.",
+        type: "error",
+      });
     }
+  };
+
+  const handleEdit = () => {
+    dispatch(setIsFormEdit(true));
+    openForm();
   };
 
   // Action buttons for each expense row
   const actions = [
     {
       label: "Edit",
-      onClick: () => {
-        dispatch(setIsFormEdit(true));
-        openForm();
-      },
+      onClick: handleEdit,
       icon: <Edit />,
     },
     {
       label: isActive ? "Archive" : "Restore",
-      onClick: () => handleArchiveRestore(),
+      onClick: handleArchiveRestore,
       icon: isActive ? <Archive /> : <Restore />,
     },
   ];

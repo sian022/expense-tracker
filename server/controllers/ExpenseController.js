@@ -136,7 +136,7 @@ const ExpenseController = {
       });
     } catch (error) {
       // Send an error response
-      res.status(500).json({ error: error.message, status: error.status });
+      res.status(500).json({ message: error.message, status: error.status });
     }
   },
 };

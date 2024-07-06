@@ -16,8 +16,11 @@ import {
   useUpdateExpenseMutation,
 } from "../../services/expensesApi";
 import moment from "moment";
+import useToast from "../../hooks/useToast";
 
 const ExpensesForm = ({ open, onClose }) => {
+  const toast = useToast(); // Use the custom toast hook
+
   // Retrieve selected currency from Redux store
   const selectedCurrency = useSelector((state) => state.currency.currency);
   // Find details of the selected currency from the currencies list
@@ -71,9 +74,17 @@ const ExpensesForm = ({ open, onClose }) => {
         updateExpense({ id: selectedRow?.id, ...transformedData }).unwrap();
       }
 
+      toast({
+        message: `Expense ${isEdit ? "updated" : "added"} succesfully`,
+        type: "success",
+      });
       onClose(); // Close the modal
     } catch (error) {
       console.log(error); // Log any errors
+      toast({
+        message: error?.data?.message || "An error occurred. Please try again",
+        type: "error",
+      });
     }
   };
 

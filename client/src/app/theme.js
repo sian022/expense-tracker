@@ -6,6 +6,9 @@ const colors = {
   secondary: "#4caf50",
   tertiary: "#ff9800",
   background: "#fafbff",
+  error: "#f44336",
+  success: "#388e3c",
+  warning: "#ffa726",
 };
 
 // Create MUI theme using createTheme function
