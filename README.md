@@ -116,7 +116,7 @@ Time Management
 
 ## Time Management
 
-I aimed to complete the project within 8 hours and successfully finished it in 7.5 hours. The core functionalities and design were completed in around 5-6 hours. The remaining time was spent cleaning up and refining the UI, adding additional features, and implementing validations for quality of life.
+I aimed to complete the project within 8 hours and successfully finished it in 7.75 hours. The core functionalities and design were completed in around 5-6 hours. The remaining time was spent cleaning up and refining the UI, adding additional features, and implementing validations for quality of life.
 
 ### Timesheet
 
@@ -125,6 +125,7 @@ July 6, 2024
 - 10:00 AM - 12:30 PM
 - 1:00 PM - 5:00 PM
 - 6:00 PM - 7:00 PM
+- 10:00 PM - 10:15 PM
 
 ## Feedback on Test Process
 

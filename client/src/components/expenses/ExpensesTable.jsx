@@ -2,8 +2,8 @@ import { useState, useCallback } from "react";
 import {
   Checkbox,
   Chip,
-  CircularProgress,
   InputAdornment,
+  Skeleton,
   Stack,
   Tab,
   Table,
@@ -40,6 +40,7 @@ import useDebounce from "../../hooks/useDebounce";
 import useCurrency from "../../hooks/useCurrency";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import TableContainerSkeleton from "./TableContainerSkeleton";
 
 const ExpensesTable = ({ openForm }) => {
   const dispatch = useDispatch();
@@ -220,17 +221,26 @@ const ExpensesTable = ({ openForm }) => {
         {/* Total expenses */}
         {!isSmall && (
           <Stack direction="row" gap={2} alignItems="center">
-            {!isMedium && (
+            {/* Skeletons for loading state */}
+            {!isMedium && isFetching && (
+              <Skeleton width="140px" sx={{ transform: "none" }} />
+            )}
+
+            {!isMedium && !isFetching && (
               <Typography color="secondary.main">Current View Total</Typography>
             )}
 
-            <Typography
-              color="secondary.main"
-              fontWeight={700}
-              fontSize="1.2rem"
-            >
-              {currency(currentViewTotal, selectedCurrency)}
-            </Typography>
+            {isFetching ? (
+              <Skeleton width="100px" sx={{ transform: "none" }} />
+            ) : (
+              <Typography
+                color="secondary.main"
+                fontWeight={700}
+                fontSize="1.2rem"
+              >
+                {currency(currentViewTotal, selectedCurrency)}
+              </Typography>
+            )}
           </Stack>
         )}
       </Stack>
@@ -253,16 +263,18 @@ const ExpensesTable = ({ openForm }) => {
       </Stack>
 
       {/* Table section */}
+      {/* Skeleton for loading */}
       {isFetching ? (
         // Loading spinner while fetching data
-        <Stack flex={1} alignItems="center" justifyContent="center">
-          <CircularProgress size="40px" />
-        </Stack>
+        // <Stack flex={1} alignItems="center" justifyContent="center">
+        //   <CircularProgress size="40px" />
+        // </Stack>
+        <TableContainerSkeleton />
       ) : (
         <TableContainer
           sx={{
             flex: isSmall ? 1 : "auto",
-            height: "calc(100vh - 420px)", // Adjust height based on screen size
+            height: "calc(100vh - 440px)", // Adjust height based on screen size
             overflow: "auto",
           }}
         >

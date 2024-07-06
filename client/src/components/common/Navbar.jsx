@@ -1,5 +1,6 @@
 import logo from "../../assets/images/logo-no-bg.png";
 import {
+  Box,
   MenuItem,
   Stack,
   TextField,
@@ -51,7 +52,10 @@ const Navbar = () => {
         sx={{ cursor: "pointer" }}
         onClick={handleLogoClick}
       >
-        <img src={logo} alt="logo" width="50" />
+        {/* Box component to occupy space while image loads */}
+        <Box height="50px">
+          <img src={logo} alt="logo" width="50px" />
+        </Box>
 
         {!isSmall && (
           <Typography
