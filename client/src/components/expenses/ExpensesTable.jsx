@@ -3,7 +3,6 @@ import {
   Chip,
   CircularProgress,
   FormControlLabel,
-  IconButton,
   InputAdornment,
   Stack,
   Table,
@@ -19,14 +18,17 @@ import moment from "moment";
 import { useState } from "react";
 import useCurrency from "../../hooks/useCurrency";
 import {
+  Archive,
   ArrowDownward,
   ArrowUpward,
+  Edit,
   HorizontalRule,
-  MoreVert,
+  Restore,
   Search,
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { useGetAllExpensesQuery } from "../../services/expensesApi";
+import Actions from "../common/Actions";
 
 const ExpensesTable = () => {
   const currency = useCurrency();
@@ -36,7 +38,7 @@ const ExpensesTable = () => {
 
   // Local state for pagination, search, and active status filter
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState("");
   const [isActive, setIsActive] = useState(true);
 
@@ -75,6 +77,20 @@ const ExpensesTable = () => {
       };
     }
   };
+
+  // Action buttons for each expense row
+  const actions = [
+    {
+      label: "Edit",
+      onClick: () => console.log("Edit expense"),
+      icon: <Edit />,
+    },
+    {
+      label: isActive ? "Archive" : "Restore",
+      onClick: () => console.log("Archive expense"),
+      icon: isActive ? <Archive /> : <Restore />,
+    },
+  ];
 
   return (
     <Stack bgcolor="#fff" borderRadius="15px" flex={1} padding={2}>
@@ -154,9 +170,7 @@ const ExpensesTable = () => {
 
                   {/* Actions column */}
                   <TableCell>
-                    <IconButton color="primary">
-                      <MoreVert />
-                    </IconButton>
+                    <Actions actions={actions} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -173,7 +187,7 @@ const ExpensesTable = () => {
         rowsPerPage={rowsPerPage}
         onPageChange={(_, newPage) => setPage(newPage)}
         onRowsPerPageChange={(e) => setRowsPerPage(e.target.value)}
-        rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+        rowsPerPageOptions={[10, 25, 50, { label: "All", value: -1 }]}
       />
     </Stack>
   );

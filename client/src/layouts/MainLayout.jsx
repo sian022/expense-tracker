@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 const MainLayout = () => {
   return (
     // Main Stack container for the entire layout, occupying full viewport
-    <Stack width="100vw" height="100vh" bgcolor="background.main">
+    <Stack width="100vw" height="100vh" bgcolor="background.default">
       {/* Navbar component for navigation */}
       <Navbar />
 
