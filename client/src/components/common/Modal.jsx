@@ -4,6 +4,7 @@ import {
   Modal as MuiModal,
   Stack,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
@@ -12,16 +13,21 @@ const Modal = ({
   open,
   onClose,
   width = 400,
+  responsiveBreakpoint = 600,
   title = "Title",
   ...props
 }) => {
+  // Media query for responsive design
+  const matches = useMediaQuery(`(max-width:${responsiveBreakpoint}px)`);
+
   // Style object for the modal box
   const style = {
     position: "absolute",
+    width: matches ? "90%" : width,
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width,
+    // width,
     bgcolor: "background.paper",
     borderRadius: "10px",
     boxShadow: 24,

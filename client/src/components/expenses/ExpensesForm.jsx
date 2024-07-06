@@ -113,6 +113,7 @@ const ExpensesForm = ({ open, onClose }) => {
       open={open}
       onClose={onClose}
       width="500px"
+      responsiveBreakpoint={600}
     >
       <Stack gap={1.5} component="form" onSubmit={handleSubmit(onSubmit)}>
         {/* Description field */}
@@ -146,6 +147,8 @@ const ExpensesForm = ({ open, onClose }) => {
               allowNegative={false}
               allowLeadingZeros={false}
               decimalScale={2}
+              error={!!errors.amount}
+              helperText={errors.amount?.message}
             />
           )}
         />

@@ -2,7 +2,6 @@ import {
   Checkbox,
   Chip,
   CircularProgress,
-  FormControlLabel,
   InputAdornment,
   Stack,
   Tab,
@@ -16,6 +15,7 @@ import {
   Tabs,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import moment from "moment";
 import { useCallback, useState } from "react";
@@ -44,6 +44,10 @@ const ExpensesTable = ({ openForm }) => {
   const currency = useCurrency();
   const toast = useToast();
   const debounce = useDebounce();
+
+  // Media query for responsive design
+  const isMedium = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   // Redux state for selected currency
   const selectedCurrency = useSelector((state) => state.currency.currency);
@@ -150,7 +154,12 @@ const ExpensesTable = ({ openForm }) => {
     <Stack bgcolor="#fff" borderRadius="15px" flex={1} padding={2} gap={0.5}>
       {/* Search and filter section */}
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Stack direction="row" gap={2}>
+        <Stack
+          direction="row"
+          gap={2}
+          justifyContent={isSmall ? "space-between" : "flex-start"}
+          width={isSmall ? "100%" : "auto"}
+        >
           {/* Search input */}
           <TextField
             type="search"
@@ -165,30 +174,40 @@ const ExpensesTable = ({ openForm }) => {
             }}
             onChange={(e) => debounce(() => setSearch(e.target.value), 300)}
           />
-
           {/* Checkbox to toggle active/inactive expenses */}
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={!isActive}
-                onChange={(e) => setIsActive(!e.target.checked)}
-              />
-            }
-            label="Show Inactive"
-          />
+          <Stack direction="row" alignItems="center">
+            <Checkbox
+              checked={!isActive}
+              onChange={(e) => setIsActive(!e.target.checked)}
+            />
+
+            {isSmall ? <Archive /> : <Typography>Show Archived</Typography>}
+          </Stack>
         </Stack>
 
         {/* Total expenses */}
-        <Stack direction="row" gap={2} alignItems="center">
-          <Typography color="secondary.main">Current View Total</Typography>
+        {!isSmall && (
+          <Stack direction="row" gap={2} alignItems="center">
+            {!isMedium && (
+              <Typography color="secondary.main">Current View Total</Typography>
+            )}
 
-          <Typography color="secondary.main" fontWeight={600} fontSize="1.2rem">
-            {currency(currentViewTotal, selectedCurrency)}
-          </Typography>
-        </Stack>
+            <Typography
+              color="secondary.main"
+              fontWeight={600}
+              fontSize="1.2rem"
+            >
+              {currency(currentViewTotal, selectedCurrency)}
+            </Typography>
+          </Stack>
+        )}
       </Stack>
 
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent={isSmall ? "center" : "flex-start"}
+      >
         {/* View options tabs */}
         <Tabs
           value={viewMode}
@@ -201,12 +220,14 @@ const ExpensesTable = ({ openForm }) => {
 
       {/* Table section */}
       {isFetching ? (
-        <CircularProgress />
+        <Stack flex={1} alignItems="center" justifyContent="center">
+          <CircularProgress />
+        </Stack>
       ) : (
         <TableContainer
           sx={{
-            // flex: 1,
-            maxHeight: "calc(100vh - 200px) !important",
+            flex: isSmall ? 1 : "auto",
+            height: "calc(100vh - 420px)",
             overflow: "auto",
           }}
         >

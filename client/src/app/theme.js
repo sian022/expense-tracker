@@ -55,6 +55,17 @@ const theme = createTheme({
       },
     },
 
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
+          backgroundColor: "#fff", // Set background color for table head
+        },
+      },
+    },
+
     MuiCircularProgress: {
       defaultProps: {
         size: "1.5rem", // Set default size for CircularProgress

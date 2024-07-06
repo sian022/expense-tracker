@@ -1,4 +1,4 @@
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, useMediaQuery } from "@mui/material";
 import useDisclosure from "../hooks/useDisclosure";
 import ExpensesForm from "../components/expenses/ExpensesForm";
 import AllTimeExpenses from "../components/expenses/AllTimeExpenses";
@@ -9,6 +9,8 @@ import { setIsFormEdit, setSelectedRow } from "../slices/tableSlice";
 
 const ExpensesPage = () => {
   const dispatch = useDispatch();
+
+  const matches = useMediaQuery("(min-width:450px)");
 
   // Custom hook for managing modal state
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -41,7 +43,7 @@ const ExpensesPage = () => {
             endIcon={<Add />}
             size="large"
           >
-            Add Expense
+            {matches && "Add Expense"}
           </Button>
         </Stack>
 

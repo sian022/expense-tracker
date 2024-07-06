@@ -1,5 +1,11 @@
 import logo from "../../assets/images/logo-no-bg.png";
-import { MenuItem, Stack, TextField, Typography } from "@mui/material";
+import {
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrency } from "../../slices/currencySlice";
@@ -8,6 +14,8 @@ import currencies from "../../utils/currencies";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   // Get the selected currency from Redux store
   const selectedCurrency = useSelector((state) => state.currency.currency);
@@ -45,14 +53,16 @@ const Navbar = () => {
       >
         <img src={logo} alt="logo" width="50" />
 
-        <Typography
-          variant="h4"
-          fontFamily="Montserrat"
-          fontWeight={700}
-          color="primary.main"
-        >
-          Expense Tracker
-        </Typography>
+        {!isSmall && (
+          <Typography
+            variant="h4"
+            fontFamily="Montserrat"
+            fontWeight={700}
+            color="primary.main"
+          >
+            Expense Tracker
+          </Typography>
+        )}
       </Stack>
 
       {/* Currency selector section */}
