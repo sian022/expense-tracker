@@ -4,10 +4,20 @@ import ExpensesForm from "../components/expenses/ExpensesForm";
 import ExpensesTotal from "../components/expenses/ExpensesTotal";
 import ExpensesTable from "../components/expenses/ExpensesTable";
 import { Add } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { setIsFormEdit, setSelectedRow } from "../slices/tableSlice";
 
 const ExpensesPage = () => {
+  const dispatch = useDispatch();
+
   // Custom hook for managing modal state
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleAddExpense = () => {
+    dispatch(setIsFormEdit(false));
+    dispatch(setSelectedRow(null));
+    onOpen();
+  };
 
   // Dummy total for expenses
   const total = 2000;
@@ -30,7 +40,7 @@ const ExpensesPage = () => {
           {/* Button to open ExpensesForm modal */}
           <Button
             variant="contained"
-            onClick={onOpen}
+            onClick={handleAddExpense}
             endIcon={<Add />}
             size="large"
           >
@@ -39,7 +49,7 @@ const ExpensesPage = () => {
         </Stack>
 
         {/* ExpensesTable component displaying list of expenses */}
-        <ExpensesTable />
+        <ExpensesTable openForm={onOpen} />
       </Stack>
     </>
   );

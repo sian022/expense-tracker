@@ -26,15 +26,22 @@ import {
   Restore,
   Search,
 } from "@mui/icons-material";
-import { useSelector } from "react-redux";
-import { useGetAllExpensesQuery } from "../../services/expensesApi";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  useGetAllExpensesQuery,
+  useUpdateExpenseStatusMutation,
+} from "../../services/expensesApi";
 import Actions from "../common/Actions";
+import { setIsFormEdit, setSelectedRow } from "../../slices/tableSlice";
 
-const ExpensesTable = () => {
+const ExpensesTable = ({ openForm }) => {
+  const dispatch = useDispatch();
   const currency = useCurrency();
 
   // Redux state for selected currency
   const selectedCurrency = useSelector((state) => state.currency.currency);
+  // Redux state for selected row
+  const selectedRow = useSelector((state) => state.table.selectedRow);
 
   // Local state for pagination, search, and active status filter
   const [page, setPage] = useState(0);
@@ -49,6 +56,7 @@ const ExpensesTable = () => {
     page: page + 1,
     pageSize: rowsPerPage,
   });
+  const [updateExpenseStatus] = useUpdateExpenseStatusMutation();
 
   // Calculate average expense amount
   const averageExpense = data?.expenses.reduce((acc, expense) => {
@@ -78,16 +86,28 @@ const ExpensesTable = () => {
     }
   };
 
+  // Handle archive/restore action for each expense
+  const handleArchiveRestore = async () => {
+    try {
+      await updateExpenseStatus(selectedRow?.id).unwrap();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // Action buttons for each expense row
   const actions = [
     {
       label: "Edit",
-      onClick: () => console.log("Edit expense"),
+      onClick: () => {
+        dispatch(setIsFormEdit(true));
+        openForm();
+      },
       icon: <Edit />,
     },
     {
       label: isActive ? "Archive" : "Restore",
-      onClick: () => console.log("Archive expense"),
+      onClick: () => handleArchiveRestore(),
       icon: isActive ? <Archive /> : <Restore />,
     },
   ];
@@ -150,7 +170,12 @@ const ExpensesTable = () => {
             {/* Table body with expense data */}
             <TableBody>
               {data?.expenses.map((expense) => (
-                <TableRow key={expense.id}>
+                <TableRow
+                  key={expense.id}
+                  onClick={() => {
+                    dispatch(setSelectedRow(expense));
+                  }}
+                >
                   <TableCell>
                     {moment(expense.date).format("MMM DD, YYYY")}
                   </TableCell>

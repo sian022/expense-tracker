@@ -21,7 +21,10 @@ const Actions = ({ actions = [] }) => {
         {actions.map((action, index) => (
           <MenuItem
             key={index}
-            onClick={action.onClick}
+            onClick={() => {
+              action.onClick();
+              onClose();
+            }}
             sx={{ display: "flex", gap: 1, alignItems: "center" }}
           >
             {action.icon && action.icon}

@@ -15,14 +15,19 @@ import {
   useCreateExpenseMutation,
   useUpdateExpenseMutation,
 } from "../../services/expensesApi";
+import moment from "moment";
 
-const ExpensesForm = ({ open, onClose, isEdit }) => {
+const ExpensesForm = ({ open, onClose }) => {
   // Retrieve selected currency from Redux store
   const selectedCurrency = useSelector((state) => state.currency.currency);
   // Find details of the selected currency from the currencies list
   const selectedCurrencyDetails = currencies.find(
     (c) => c.currency === selectedCurrency
   );
+  // Check if the form is in edit mode
+  const isEdit = useSelector((state) => state.table.isFormEdit);
+  // Selected Row Data
+  const selectedRow = useSelector((state) => state.table.selectedRow);
 
   // Initialize react-hook-form with validation schema and default values
   const {
@@ -31,6 +36,7 @@ const ExpensesForm = ({ open, onClose, isEdit }) => {
     formState: { errors },
     reset,
     control,
+    setValue,
   } = useForm({
     resolver: yupResolver(expenseSchema), // Use Yup resolver for validation
     defaultValues: {
@@ -62,7 +68,7 @@ const ExpensesForm = ({ open, onClose, isEdit }) => {
         await createExpense(transformedData).unwrap();
       } else {
         // Call the updateExpense mutation if in edit mode
-        // updateExpense({ id: expenseId, data: transformedData });
+        updateExpense({ id: selectedRow?.id, ...transformedData }).unwrap();
       }
 
       onClose(); // Close the modal
@@ -77,11 +83,26 @@ const ExpensesForm = ({ open, onClose, isEdit }) => {
   useEffect(() => {
     if (!open) {
       reset();
+    } else {
+      // Set default values when in edit mode
+      if (isEdit) {
+        setValue("description", selectedRow?.description);
+        setValue(
+          "amount",
+          selectedRow?.amount * selectedCurrencyDetails.conversionRate
+        );
+        setValue("date", moment(selectedRow?.date));
+      }
     }
-  }, [open, reset]);
+  }, [open, reset, isEdit, selectedRow, setValue, selectedCurrencyDetails]);
 
   return (
-    <Modal title="Add New Expense" open={open} onClose={onClose} width="500px">
+    <Modal
+      title={isEdit ? "Update Expense" : "Add New Expense"}
+      open={open}
+      onClose={onClose}
+      width="500px"
+    >
       <Stack spacing={1.5} component="form" onSubmit={handleSubmit(onSubmit)}>
         {/* Description field */}
         <TextField
@@ -113,6 +134,7 @@ const ExpensesForm = ({ open, onClose, isEdit }) => {
               thousandSeparator=","
               allowNegative={false}
               allowLeadingZeros={false}
+              decimalScale={2}
             />
           )}
         />
