@@ -139,10 +139,8 @@ const ExpensesTable = ({ openForm }) => {
   };
 
   // Calculate total amount of expenses in the current view
-  const currentViewTotal = data?.expenses.reduce(
-    (acc, expense) => acc + expense.amount,
-    0
-  );
+  const currentViewTotal =
+    data?.expenses.reduce((acc, expense) => acc + expense.amount, 0) || 0;
 
   // Actions available for each expense row
   const actions = [
@@ -263,12 +261,8 @@ const ExpensesTable = ({ openForm }) => {
       </Stack>
 
       {/* Table section */}
-      {/* Skeleton for loading */}
       {isFetching ? (
-        // Loading spinner while fetching data
-        // <Stack flex={1} alignItems="center" justifyContent="center">
-        //   <CircularProgress size="40px" />
-        // </Stack>
+        // Loading skeleton while fetching data
         <TableContainerSkeleton />
       ) : (
         <TableContainer

@@ -80,7 +80,6 @@ const ExpensesForm = ({ open, onClose }) => {
       });
       onClose(); // Close the modal
     } catch (error) {
-      console.log(error); // Log any errors
       toast({
         message: error?.data?.message || "An error occurred. Please try again",
         type: "error",

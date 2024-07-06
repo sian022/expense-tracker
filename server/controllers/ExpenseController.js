@@ -22,7 +22,7 @@ const ExpenseController = {
       });
     } catch (error) {
       // Send an error response
-      res.status(500).json({ error: error.message, status: error.status });
+      res.status(500).json({ message: error.message, status: error.status });
     }
   },
 
@@ -141,7 +141,7 @@ const ExpenseController = {
       res.json({ totalExpenses });
     } catch (error) {
       // Send an error response
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
@@ -164,6 +164,17 @@ const ExpenseController = {
         throw error;
       }
 
+      // Check if there are no changes
+      if (
+        expense.amount === amount &&
+        expense.description === description &&
+        expense.date === date
+      ) {
+        const error = new Error("No changes detected");
+        error.status = 400;
+        throw error;
+      }
+
       // Update the expense
       await expense.update({
         amount,
@@ -178,7 +189,7 @@ const ExpenseController = {
       });
     } catch (error) {
       // Send an error response
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
