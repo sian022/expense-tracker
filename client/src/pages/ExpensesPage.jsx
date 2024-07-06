@@ -1,7 +1,7 @@
 import { Button, Stack } from "@mui/material";
 import useDisclosure from "../hooks/useDisclosure";
 import ExpensesForm from "../components/expenses/ExpensesForm";
-import ExpensesTotal from "../components/expenses/ExpensesTotal";
+import AllTimeExpenses from "../components/expenses/AllTimeExpenses";
 import ExpensesTable from "../components/expenses/ExpensesTable";
 import { Add } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
@@ -19,9 +19,6 @@ const ExpensesPage = () => {
     onOpen();
   };
 
-  // Dummy total for expenses
-  const total = 2000;
-
   return (
     <>
       {/* ExpensesForm component for adding/editing expenses */}
@@ -34,8 +31,8 @@ const ExpensesPage = () => {
           justifyContent="space-between"
           alignItems="center"
         >
-          {/* ExpensesTotal component displaying total expenses */}
-          <ExpensesTotal total={total} />
+          {/* AllTimeExpenses component displaying total expenses */}
+          <AllTimeExpenses />
 
           {/* Button to open ExpensesForm modal */}
           <Button

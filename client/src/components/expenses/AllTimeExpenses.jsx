@@ -3,7 +3,7 @@ import useCurrency from "../../hooks/useCurrency";
 import { useSelector } from "react-redux";
 import { useGetTotalExpensesQuery } from "../../services/expensesApi";
 
-const ExpensesTotal = () => {
+const AllTimeExpenses = () => {
   // Custom hook to format currency
   // We're passing the amount and the global selected currency
   const currency = useCurrency();
@@ -34,4 +34,4 @@ const ExpensesTotal = () => {
   );
 };
 
-export default ExpensesTotal;
+export default AllTimeExpenses;

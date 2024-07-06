@@ -13,6 +13,7 @@ import {
   TablePagination,
   TableRow,
   TextField,
+  Typography,
 } from "@mui/material";
 import moment from "moment";
 import { useCallback, useState } from "react";
@@ -117,6 +118,11 @@ const ExpensesTable = ({ openForm }) => {
     openForm();
   };
 
+  const currentViewTotal = data?.expenses.reduce(
+    (acc, expense) => acc + expense.amount,
+    0
+  );
+
   // Action buttons for each expense row
   const actions = [
     {
@@ -163,6 +169,19 @@ const ExpensesTable = ({ openForm }) => {
           />
         </Stack>
 
+        {/* Total expenses */}
+        <Stack direction="row" spacing={2}>
+          <Typography color="secondary.main" fontSize="1.1rem">
+            Current View Total
+          </Typography>
+
+          <Typography color="secondary.main" fontWeight={600} fontSize="1.2rem">
+            {currency(currentViewTotal, selectedCurrency)}
+          </Typography>
+        </Stack>
+      </Stack>
+
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
         {/* View options */}
         <Stack direction="row" spacing={1} alignItems="center">
           View by weekly or all expenses
