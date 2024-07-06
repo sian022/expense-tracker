@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/common/Navbar";
 import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
