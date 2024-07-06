@@ -2,8 +2,8 @@ import logo from "../../assets/images/logo-no-bg.png";
 import { MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import currencies from "../../utils/currencies";
 import { setCurrency } from "../../slices/currencySlice";
+import currencies from "../../utils/currencies";
 
 const Navbar = () => {
   const navigate = useNavigate();
