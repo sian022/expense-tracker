@@ -1,6 +1,7 @@
 import {
   Checkbox,
   Chip,
+  CircularProgress,
   FormControlLabel,
   IconButton,
   InputAdornment,
@@ -25,7 +26,7 @@ import {
   Search,
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
-import { dummyExpenses } from "../../utils/dummy";
+import { useGetAllExpensesQuery } from "../../services/expensesApi";
 
 const ExpensesTable = () => {
   const currency = useCurrency();
@@ -39,9 +40,12 @@ const ExpensesTable = () => {
   const [search, setSearch] = useState("");
   const [isActive, setIsActive] = useState(true);
 
+  // RTK Query hook to fetch expenses
+  const { data, isFetching } = useGetAllExpensesQuery();
+
   // Calculate average expense amount
-  const averageExpense = dummyExpenses.reduce((acc, expense) => {
-    return (acc + expense.amount) / dummyExpenses.length;
+  const averageExpense = data?.expenses.reduce((acc, expense) => {
+    return (acc + expense.amount) / data?.expenses.length;
   }, 0);
 
   // Determine relative cost label, color, and icon for each expense
@@ -107,55 +111,59 @@ const ExpensesTable = () => {
       </Stack>
 
       {/* Table section */}
-      <TableContainer sx={{ flex: 1 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Relative Cost</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-
-          {/* Table body with expense data */}
-          <TableBody>
-            {dummyExpenses.map((expense) => (
-              <TableRow key={expense.id}>
-                <TableCell>
-                  {moment(expense.date).format("MMM DD, YYYY")}
-                </TableCell>
-                <TableCell sx={{ fontWeight: "700" }}>
-                  {expense.description}
-                </TableCell>
-                <TableCell>
-                  {currency(expense.amount, selectedCurrency)}
-                </TableCell>
-                <TableCell>
-                  {/* Chip indicating relative cost */}
-                  <Chip
-                    variant="outlined"
-                    {...handleRelativeCost(expense.amount)}
-                  />
-                </TableCell>
-
-                {/* Actions column */}
-                <TableCell>
-                  <IconButton color="primary">
-                    <MoreVert />
-                  </IconButton>
-                </TableCell>
+      {isFetching ? (
+        <CircularProgress />
+      ) : (
+        <TableContainer sx={{ flex: 1 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Relative Cost</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+
+            {/* Table body with expense data */}
+            <TableBody>
+              {data?.expenses.map((expense) => (
+                <TableRow key={expense.id}>
+                  <TableCell>
+                    {moment(expense.date).format("MMM DD, YYYY")}
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "700" }}>
+                    {expense.description}
+                  </TableCell>
+                  <TableCell>
+                    {currency(expense.amount, selectedCurrency)}
+                  </TableCell>
+                  <TableCell>
+                    {/* Chip indicating relative cost */}
+                    <Chip
+                      variant="outlined"
+                      {...handleRelativeCost(expense.amount)}
+                    />
+                  </TableCell>
+
+                  {/* Actions column */}
+                  <TableCell>
+                    <IconButton color="primary">
+                      <MoreVert />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
       {/* Pagination section */}
       <TablePagination
         component="div"
-        count={dummyExpenses.length || 0}
+        count={data?.expenses.length || 0}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={(_, newPage) => setPage(newPage)}

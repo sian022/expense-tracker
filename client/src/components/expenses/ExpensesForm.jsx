@@ -4,14 +4,19 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { Button, Stack, TextField } from "@mui/material";
+import { Button, CircularProgress, Stack, TextField } from "@mui/material";
 import { NumericFormat } from "react-number-format";
 
 import Modal from "../common/Modal";
 import currencies from "../../utils/currencies";
 import { expenseSchema } from "../../app/schema";
 
-const ExpensesForm = ({ open, onClose }) => {
+import {
+  useCreateExpenseMutation,
+  useUpdateExpenseMutation,
+} from "../../services/expensesApi";
+
+const ExpensesForm = ({ open, onClose, isEdit }) => {
   // Retrieve selected currency from Redux store
   const selectedCurrency = useSelector((state) => state.currency.currency);
   // Find details of the selected currency from the currencies list
@@ -35,6 +40,12 @@ const ExpensesForm = ({ open, onClose }) => {
     },
   });
 
+  // RTK Mutation hook to add new expense
+  const [createExpense, { isLoading: isCreateLoading }] =
+    useCreateExpenseMutation();
+  const [updateExpense, { isLoading: isUpdateLoading }] =
+    useUpdateExpenseMutation();
+
   // Handle form submission
   const onSubmit = (data) => {
     try {
@@ -46,7 +57,13 @@ const ExpensesForm = ({ open, onClose }) => {
         amount: amountUSD,
       };
 
-      console.log(transformedData); // Log transformed data
+      // Call the createExpense mutation if not in edit mode
+      if (!isEdit) {
+        createExpense(transformedData);
+      } else {
+        // Call the updateExpense mutation if in edit mode
+        // updateExpense({ id: expenseId, data: transformedData });
+      }
     } catch (error) {
       console.log(error); // Log any errors
     }
@@ -115,7 +132,7 @@ const ExpensesForm = ({ open, onClose }) => {
 
         {/* Submit button */}
         <Button type="submit" variant="contained" color="primary">
-          Submit
+          {isCreateLoading || isUpdateLoading ? <CircularProgress /> : "Submit"}
         </Button>
       </Stack>
     </Modal>

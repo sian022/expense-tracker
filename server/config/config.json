@@ -2,6 +2,6 @@
   "_comment": "Config should be in .env file but for the sake of this project, I will put it here. I will also use sqlite for the database to make it easier to run the project.",
   "development": {
     "dialect": "sqlite",
-    "storage": "server/data/database.sqlite"
+    "storage": "../data/database.sqlite"
   }
 }
