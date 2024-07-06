@@ -177,7 +177,12 @@ const ExpensesForm = ({ open, onClose }) => {
         />
 
         {/* Submit button */}
-        <Button type="submit" variant="contained" color="primary">
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={isCreateLoading || isUpdateLoading}
+        >
           {isCreateLoading || isUpdateLoading ? <CircularProgress /> : "Submit"}
         </Button>
       </Stack>
