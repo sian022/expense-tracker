@@ -24,7 +24,7 @@ const ExpensesPage = () => {
       {/* ExpensesForm component for adding/editing expenses */}
       <ExpensesForm open={isOpen} onClose={onClose} />
 
-      <Stack spacing={2} flex={1}>
+      <Stack gap={2} flex={1}>
         {/* Stack for displaying total expenses and add expense button */}
         <Stack
           direction="row"

@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   InputAdornment,
   Stack,
+  Tab,
   Table,
   TableBody,
   TableCell,
@@ -12,6 +13,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Tabs,
   TextField,
   Typography,
 } from "@mui/material";
@@ -53,6 +55,9 @@ const ExpensesTable = ({ openForm }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [viewMode, setViewMode] = useState("All Expenses");
+
+  const isWeek = viewMode === "Weekly";
 
   // RTK Query hook to fetch expenses
   const { data, isFetching } = useGetAllExpensesQuery({
@@ -60,24 +65,28 @@ const ExpensesTable = ({ openForm }) => {
     isActive,
     page: page + 1,
     pageSize: rowsPerPage,
+    isWeek,
   });
   const [updateExpenseStatus] = useUpdateExpenseStatusMutation();
 
   // Calculate average expense amount
-  const averageExpense = data?.expenses.reduce((acc, expense) => {
-    return (acc + expense.amount) / data?.expenses.length;
-  }, 0);
+  const currentViewAverage =
+    data?.expenses.reduce((acc, expense) => {
+      return acc + expense.amount;
+    }, 0) / data?.expenses.length;
+
+  // const allTimeAverage = data?.allTimeAverage || 0;
 
   // Determine relative cost label, color, and icon for each expense
   const handleRelativeCost = useCallback(
     (amount) => {
-      if (amount > averageExpense) {
+      if (amount > currentViewAverage) {
         return {
           label: "More than average",
           color: "error",
           icon: <ArrowUpward sx={{ fontSize: "1.1rem" }} />,
         };
-      } else if (amount === averageExpense) {
+      } else if (amount === currentViewAverage) {
         return {
           label: "Equal to average",
           color: "primary",
@@ -91,7 +100,7 @@ const ExpensesTable = ({ openForm }) => {
         };
       }
     },
-    [averageExpense]
+    [currentViewAverage]
   );
 
   // Handle archive/restore action for each expense
@@ -138,10 +147,10 @@ const ExpensesTable = ({ openForm }) => {
   ];
 
   return (
-    <Stack bgcolor="#fff" borderRadius="15px" flex={1} padding={2}>
+    <Stack bgcolor="#fff" borderRadius="15px" flex={1} padding={2} gap={0.5}>
       {/* Search and filter section */}
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" gap={2}>
           {/* Search input */}
           <TextField
             type="search"
@@ -170,10 +179,8 @@ const ExpensesTable = ({ openForm }) => {
         </Stack>
 
         {/* Total expenses */}
-        <Stack direction="row" spacing={2}>
-          <Typography color="secondary.main" fontSize="1.1rem">
-            Current View Total
-          </Typography>
+        <Stack direction="row" gap={2} alignItems="center">
+          <Typography color="secondary.main">Current View Total</Typography>
 
           <Typography color="secondary.main" fontWeight={600} fontSize="1.2rem">
             {currency(currentViewTotal, selectedCurrency)}
@@ -182,22 +189,32 @@ const ExpensesTable = ({ openForm }) => {
       </Stack>
 
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        {/* View options */}
-        <Stack direction="row" spacing={1} alignItems="center">
-          View by weekly or all expenses
-        </Stack>
+        {/* View options tabs */}
+        <Tabs
+          value={viewMode}
+          onChange={(_, newValue) => setViewMode(newValue)}
+        >
+          <Tab value="All Expenses" label="All Expenses" />
+          <Tab value="Weekly" label="Weekly" />
+        </Tabs>
       </Stack>
 
       {/* Table section */}
       {isFetching ? (
         <CircularProgress />
       ) : (
-        <TableContainer sx={{ flex: 1 }}>
+        <TableContainer
+          sx={{
+            // flex: 1,
+            maxHeight: "calc(100vh - 200px) !important",
+            overflow: "auto",
+          }}
+        >
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell>{isWeek ? "Week" : "Date"}</TableCell>
+                {!isWeek && <TableCell>Description</TableCell>}
                 <TableCell>Amount</TableCell>
                 <TableCell>Relative Cost</TableCell>
                 <TableCell>Actions</TableCell>
@@ -206,19 +223,25 @@ const ExpensesTable = ({ openForm }) => {
 
             {/* Table body with expense data */}
             <TableBody>
-              {data?.expenses.map((expense) => (
+              {data?.expenses.map((expense, index) => (
                 <TableRow
-                  key={expense.id}
+                  key={expense.id || index}
                   onClick={() => {
                     dispatch(setSelectedRow(expense));
                   }}
                 >
                   <TableCell>
-                    {moment(expense.date).format("MMM DD, YYYY")}
+                    {isWeek
+                      ? moment(expense.week, "YYYY-[W]WW").format(
+                          "YYYY [Week] WW"
+                        )
+                      : moment(expense.date).format("MMM DD, YYYY")}
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "700" }}>
-                    {expense.description}
-                  </TableCell>
+                  {!isWeek && (
+                    <TableCell sx={{ fontWeight: "700" }}>
+                      {expense.description}
+                    </TableCell>
+                  )}
                   <TableCell>
                     {currency(expense.amount, selectedCurrency)}
                   </TableCell>

@@ -25,19 +25,21 @@ const Navbar = () => {
   return (
     <Stack
       direction="row"
-      spacing={2}
+      gap={2}
       position="sticky"
       top={0}
       alignItems="center"
       justifyContent="space-between"
       px={3}
       py={2}
+      bgcolor="background.default"
+      zIndex={1000}
     >
       {/* Logo and app name section */}
       <Stack
         direction="row"
         alignItems="center"
-        spacing={2}
+        gap={2}
         sx={{ cursor: "pointer" }}
         onClick={handleLogoClick}
       >
@@ -65,7 +67,7 @@ const Navbar = () => {
         {/* Generate menu items for each currency */}
         {currencies.map((c) => (
           <MenuItem key={c.currency} value={c.currency}>
-            <Stack direction="row" spacing={2} alignItems="center">
+            <Stack direction="row" gap={2} alignItems="center">
               <img src={c.flagSrc} width="20px" alt={c.name} />
               <Typography>{c.currency}</Typography>
             </Stack>

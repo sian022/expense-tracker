@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 const Expense = require("../models/ExpenseModel");
 
 const ExpenseController = {
@@ -29,7 +29,13 @@ const ExpenseController = {
   getAllExpenses: async (req, res) => {
     // Get all expenses
     try {
-      const { page = 1, pageSize = 10, search = "", isActive } = req.query;
+      const {
+        page = 1,
+        pageSize = 10,
+        search = "",
+        isActive,
+        isWeek,
+      } = req.query;
       const offset = (page - 1) * pageSize;
 
       const searchCondition = search
@@ -50,24 +56,55 @@ const ExpenseController = {
         ...isActiveCondition,
       };
 
+      let expenses;
+      let count;
+      let totalPages;
+
       // Get all expenses
-      const expenses = await Expense.findAndCountAll({
-        limit: pageSize,
-        offset,
-        where: whereCondition,
-        order: [["date", "DESC"]],
-      });
+      if (isWeek === "true") {
+        // Get all expenses grouped by week
+        expenses = await Expense.findAndCountAll({
+          attributes: [
+            [fn("strftime", "%Y-%W", col("date")), "week"],
+            [fn("SUM", col("amount")), "amount"],
+          ],
+          where: whereCondition,
+          group: [fn("strftime", "%Y-%W", col("date"))],
+          limit: pageSize,
+          offset,
+          order: [[col("date"), "DESC"]],
+        });
+        count = expenses.count.length;
+        totalPages = Math.ceil(count.length / pageSize);
+      } else {
+        expenses = await Expense.findAndCountAll({
+          where: whereCondition,
+          limit: pageSize,
+          offset,
+          order: [["date", "DESC"]],
+        });
+
+        count = expenses.count;
+        totalPages = Math.ceil(expenses.count / pageSize);
+      }
+
+      // const allTimeAverage = await Expense.findAll({
+      //   attributes: [[fn("AVG", col("amount")), "average"]],
+      // }).then((result) => {
+      //   return result[0].dataValues.average || 0;
+      // });
 
       // Send a response with pagination details
       res.json({
         expenses: expenses.rows,
-        totalExpenses: expenses.count,
+        totalExpenses: count,
         currentPage: parseInt(page),
-        totalPages: Math.ceil(expenses.count / pageSize),
+        totalPages,
+        // allTimeAverage,
       });
     } catch (error) {
       // Send an error response
-      res.status(500).json({ error: error.message, status: error.status });
+      res.status(500).json({ message: error.message, status: error.status });
     }
   },
 

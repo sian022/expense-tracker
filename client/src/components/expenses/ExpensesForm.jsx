@@ -114,7 +114,7 @@ const ExpensesForm = ({ open, onClose }) => {
       onClose={onClose}
       width="500px"
     >
-      <Stack spacing={1.5} component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Stack gap={1.5} component="form" onSubmit={handleSubmit(onSubmit)}>
         {/* Description field */}
         <TextField
           label="Description"
@@ -157,7 +157,13 @@ const ExpensesForm = ({ open, onClose }) => {
           render={({ field }) => (
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
-                slotProps={{ textField: { size: "small" } }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    error: !!errors.date,
+                    helperText: errors.date?.message,
+                  },
+                }}
                 {...field}
                 inputRef={field.ref}
               />
