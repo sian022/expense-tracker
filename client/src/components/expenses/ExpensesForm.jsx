@@ -40,7 +40,7 @@ const ExpensesForm = ({ open, onClose, isEdit }) => {
     },
   });
 
-  // RTK Mutation hook to add new expense
+  // RTK Mutation hooks to add and update expense
   const [createExpense, { isLoading: isCreateLoading }] =
     useCreateExpenseMutation();
   const [updateExpense, { isLoading: isUpdateLoading }] =

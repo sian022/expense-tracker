@@ -55,6 +55,7 @@ const ExpenseController = {
         limit: pageSize,
         offset,
         where: whereCondition,
+        order: [["date", "DESC"]],
       });
 
       // Send a response with pagination details
