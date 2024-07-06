@@ -8,18 +8,21 @@ const currencies = [
     currency: "USD",
     flagSrc: USAFlag,
     conversionRate: 1,
+    prefix: "$",
   },
   {
     country: "Philippines",
     currency: "PHP",
     flagSrc: PhilippinesFlag,
     conversionRate: 58.52,
+    prefix: "₱",
   },
   {
     country: "Canada",
     currency: "CAD",
     flagSrc: CanadaFlag,
     conversionRate: 1.36,
+    prefix: "CA$",
   },
 ];
 
