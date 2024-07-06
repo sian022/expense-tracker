@@ -41,7 +41,12 @@ const ExpensesTable = () => {
   const [isActive, setIsActive] = useState(true);
 
   // RTK Query hook to fetch expenses
-  const { data, isFetching } = useGetAllExpensesQuery();
+  const { data, isFetching } = useGetAllExpensesQuery({
+    search,
+    isActive,
+    page: page + 1,
+    pageSize: rowsPerPage,
+  });
 
   // Calculate average expense amount
   const averageExpense = data?.expenses.reduce((acc, expense) => {

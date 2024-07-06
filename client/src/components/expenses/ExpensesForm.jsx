@@ -47,7 +47,7 @@ const ExpensesForm = ({ open, onClose, isEdit }) => {
     useUpdateExpenseMutation();
 
   // Handle form submission
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     try {
       // Transform amount to USD value
       const amountUSD = data.amount / selectedCurrencyDetails.conversionRate;
@@ -59,11 +59,13 @@ const ExpensesForm = ({ open, onClose, isEdit }) => {
 
       // Call the createExpense mutation if not in edit mode
       if (!isEdit) {
-        createExpense(transformedData);
+        await createExpense(transformedData).unwrap();
       } else {
         // Call the updateExpense mutation if in edit mode
         // updateExpense({ id: expenseId, data: transformedData });
       }
+
+      onClose(); // Close the modal
     } catch (error) {
       console.log(error); // Log any errors
     }
