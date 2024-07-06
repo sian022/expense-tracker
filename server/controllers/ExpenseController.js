@@ -168,12 +168,14 @@ const ExpenseController = {
       if (
         expense.amount === amount &&
         expense.description === description &&
-        expense.date === date
+        +new Date(expense.date) === +new Date(date)
       ) {
         const error = new Error("No changes detected");
         error.status = 400;
         throw error;
       }
+
+      console.log(+new Date(expense.date) === +new Date(date));
 
       // Update the expense
       await expense.update({

@@ -71,7 +71,10 @@ const ExpensesForm = ({ open, onClose }) => {
         await createExpense(transformedData).unwrap();
       } else {
         // Call the updateExpense mutation if in edit mode
-        updateExpense({ id: selectedRow?.id, ...transformedData }).unwrap();
+        await updateExpense({
+          id: selectedRow?.id,
+          ...transformedData,
+        }).unwrap();
       }
 
       toast({
