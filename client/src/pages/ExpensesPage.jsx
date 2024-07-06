@@ -8,6 +8,9 @@ import { Add } from "@mui/icons-material";
 const ExpensesPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // Dummy total
+  const total = 2000;
+
   return (
     <>
       <ExpensesForm open={isOpen} onClose={onClose} />
@@ -18,9 +21,14 @@ const ExpensesPage = () => {
           justifyContent="space-between"
           alignItems="center"
         >
-          <ExpensesTotal />
+          <ExpensesTotal total={total} />
 
-          <Button variant="contained" onClick={onOpen} endIcon={<Add />}>
+          <Button
+            variant="contained"
+            onClick={onOpen}
+            endIcon={<Add />}
+            size="large"
+          >
             Add Expense
           </Button>
         </Stack>
