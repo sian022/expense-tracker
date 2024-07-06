@@ -71,6 +71,27 @@ const ExpenseController = {
     }
   },
 
+  getTotalExpenses: async (req, res) => {
+    // Get the total expenses
+    try {
+      const { isActive } = req.query;
+
+      // Set the where condition based on the isActive query parameter
+      const whereCondition = isActive === undefined ? {} : { isActive };
+
+      // Get the total expenses
+      const totalExpenses = await Expense.sum("amount", {
+        where: whereCondition,
+      });
+
+      // Send a response
+      res.json({ totalExpenses });
+    } catch (error) {
+      // Send an error response
+      res.status(500).json({ error: error.message });
+    }
+  },
+
   updateExpense: async (req, res) => {
     // Update an expense
     try {

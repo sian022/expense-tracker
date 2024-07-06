@@ -1,12 +1,15 @@
 import { Card, Typography } from "@mui/material";
 import useCurrency from "../../hooks/useCurrency";
 import { useSelector } from "react-redux";
+import { useGetTotalExpensesQuery } from "../../services/expensesApi";
 
-const ExpensesTotal = ({ total = 0 }) => {
+const ExpensesTotal = () => {
   // Custom hook to format currency
   // We're passing the amount and the global selected currency
   const currency = useCurrency();
   const selectedCurrency = useSelector((state) => state.currency.currency);
+
+  const { data } = useGetTotalExpensesQuery({ isActive: true });
 
   // Styles for the Card component
   const cardStyles = {
@@ -21,11 +24,11 @@ const ExpensesTotal = ({ total = 0 }) => {
   return (
     <Card sx={cardStyles}>
       {/* Title for total expenses */}
-      <Typography color="secondary.main">Total Expenses</Typography>
+      <Typography color="secondary.main">All Time Expenses</Typography>
 
       {/* Display the formatted total expense amount */}
       <Typography fontSize="1.5rem" fontWeight="bold" color="secondary.main">
-        {currency(total, selectedCurrency)}
+        {currency(data?.totalExpenses, selectedCurrency)}
       </Typography>
     </Card>
   );

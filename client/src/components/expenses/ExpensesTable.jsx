@@ -74,19 +74,19 @@ const ExpensesTable = ({ openForm }) => {
         return {
           label: "More than average",
           color: "error",
-          icon: <ArrowUpward />,
+          icon: <ArrowUpward sx={{ fontSize: "1.1rem" }} />,
         };
       } else if (amount === averageExpense) {
         return {
           label: "Equal to average",
           color: "primary",
-          icon: <HorizontalRule />,
+          icon: <HorizontalRule sx={{ fontSize: "1.1rem" }} />,
         };
       } else {
         return {
           label: "Less than average",
           color: "success",
-          icon: <ArrowDownward />,
+          icon: <ArrowDownward sx={{ fontSize: "1.1rem" }} />,
         };
       }
     },

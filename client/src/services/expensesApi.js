@@ -2,7 +2,7 @@ import { api } from "./api";
 
 const expensesApi = api
   .enhanceEndpoints({
-    addTagTypes: ["expenses"],
+    addTagTypes: ["expenses", "expensesTotal"],
   })
   .injectEndpoints({
     endpoints: (builder) => ({
@@ -12,7 +12,7 @@ const expensesApi = api
           method: "POST",
           body,
         }),
-        invalidatesTags: ["expenses"],
+        invalidatesTags: ["expenses", "expensesTotal"],
       }),
 
       getAllExpenses: builder.query({
@@ -24,13 +24,21 @@ const expensesApi = api
         providesTags: ["expenses"],
       }),
 
+      getTotalExpenses: builder.query({
+        query: () => ({
+          url: "/expenses/total",
+          method: "GET",
+        }),
+        providesTags: ["expensesTotal"],
+      }),
+
       updateExpense: builder.mutation({
         query: ({ id, ...body }) => ({
           url: `/expenses/${id}`,
           method: "PUT",
           body,
         }),
-        invalidatesTags: ["expenses"],
+        invalidatesTags: ["expenses", "expensesTotal"],
       }),
 
       updateExpenseStatus: builder.mutation({
@@ -38,7 +46,7 @@ const expensesApi = api
           url: `/expenses/${id}`,
           method: "PATCH",
         }),
-        invalidatesTags: ["expenses"],
+        invalidatesTags: ["expenses", "expensesTotal"],
       }),
     }),
   });
@@ -46,6 +54,7 @@ const expensesApi = api
 export const {
   useCreateExpenseMutation,
   useGetAllExpensesQuery,
+  useGetTotalExpensesQuery,
   useUpdateExpenseMutation,
   useUpdateExpenseStatusMutation,
 } = expensesApi;
