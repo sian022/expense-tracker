@@ -13,6 +13,10 @@ http://157.173.218.6:4450
 
 Follow these steps to clone and run the application locally:
 
+### Prerequisites
+
+Make sure you have Node.js installed. You can download and install it from [here](https://nodejs.org/).
+
 ### Clone the Repository
 
 Open a new terminal window to where you want to clone the project.
@@ -32,7 +36,6 @@ npm install
 ### Run Development Server for the Backend Server
 
 ```bash
-cd server
 npm run dev
 ```
 Great. You now have the backend server running. Now open a new terminal at the root of the project directory.
@@ -53,7 +56,7 @@ npm run dev
 ```
 
 You can now access it at:
-http://localhost::4450
+http://localhost:4450
 
 ## How My Solution Meets the Project Objectives
 
