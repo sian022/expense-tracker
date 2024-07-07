@@ -15,6 +15,8 @@ Follow these steps to clone and run the application locally:
 
 ### Clone the Repository
 
+Open a new terminal window to where you want to clone the project.
+
 ```bash
 git clone https://github.com/sian022/expense-tracker.git
 cd expense-tracker
@@ -33,16 +35,11 @@ npm install
 cd server
 npm run dev
 ```
+Great. You now have the backend server running. Now open a new terminal at the root of the project directory.
 
 ### Install Dependencies for the Client
 
-Go back to root project directory if not yet there
-
-```bash
-cd ..
-```
-
-Install dependencies
+Go to the newly opened terminal and install dependencies
 
 ```bash
 cd client
