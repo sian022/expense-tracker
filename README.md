@@ -98,7 +98,7 @@ I used React Number Format to handle number formatting, especially for currency 
 
 ### Component Structure
 
-The app is broken down into smaller components (ExpenseForm, ExpenseList, ExpenseFilter) to promote reusability and maintainability.
+The app is broken down into smaller components (ExpensesForm, ExpensesTable, AllTimeExpenses) to promote reusability and maintainability.
 
 ### Reusable Components and Hooks
 
