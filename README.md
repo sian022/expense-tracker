@@ -15,7 +15,8 @@ Follow these steps to clone and run the application locally:
 
 ### Prerequisites
 
-Make sure you have Node.js installed. You can download and install it from [here](https://nodejs.org/).
+- **Node.js**: Make sure you have Node.js installed. You can download and install it from [here](https://nodejs.org/).
+- **Git**: Make sure you have Git installed. You can download and install it from [here](https://git-scm.com/downloads).
 
 ### Clone the Repository
 
