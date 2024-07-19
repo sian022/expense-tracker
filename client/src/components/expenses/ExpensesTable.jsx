@@ -331,7 +331,7 @@ const ExpensesTable = ({ openForm }) => {
       {/* Pagination section */}
       <TablePagination
         component="div"
-        count={data?.expenses.length || 0}
+        count={data?.totalExpenses || 0}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={(_, newPage) => setPage(newPage)}
