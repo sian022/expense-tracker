@@ -1,5 +1,6 @@
 const { Op, fn, col, where } = require("sequelize");
 const Expense = require("../models/ExpenseModel");
+const User = require("../models/UserModel");
 
 const ExpenseController = {
   createExpense: async (req, res) => {
@@ -13,6 +14,7 @@ const ExpenseController = {
         amount,
         description,
         date,
+        userId: req.user.id,
       });
 
       // Send a response
@@ -91,10 +93,16 @@ const ExpenseController = {
         totalPages = Math.ceil(count.length / pageSize);
       } else {
         expenses = await Expense.findAndCountAll({
+          attributes: { exclude: ["userId"] },
           where: whereCondition,
           limit: pageSize,
           offset,
           order: [["date", "DESC"]],
+          include: {
+            model: User,
+            as: "user",
+            attributes: ["id", "firstName", "middleName", "lastName"],
+          },
         });
 
         count = expenses.count;

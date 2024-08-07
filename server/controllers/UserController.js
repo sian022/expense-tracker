@@ -6,7 +6,8 @@ const bcrypt = require("bcrypt");
 const UserController = {
   createUser: async (req, res, next) => {
     try {
-      const { username, password, roleId } = req.body;
+      const { username, password, roleId, firstName, middleName, lastName } =
+        req.body;
 
       // Check if the user already exists
       const existingUser = await User.findOne({
@@ -39,6 +40,9 @@ const UserController = {
         username,
         password,
         roleId,
+        firstName,
+        middleName,
+        lastName,
       });
 
       res.json({ message: "User created successfully", user });
@@ -133,7 +137,7 @@ const UserController = {
   updateUser: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { username, roleId } = req.body;
+      const { username, roleId, firstName, middleName, lastName } = req.body;
 
       // Find the user by ID
       const user = await User.findByPk(id);
@@ -164,6 +168,9 @@ const UserController = {
       // Update the user
       user.username = username;
       user.roleId = roleId;
+      user.firstName = firstName;
+      user.middleName = middleName;
+      user.lastName = lastName;
 
       await user.save();
 

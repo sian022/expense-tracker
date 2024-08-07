@@ -8,13 +8,13 @@ const userRoutes = require("./UserRoutes");
 const roleRoutes = require("./RoleRoutes");
 const expenseRoutes = require("./ExpenseRoutes");
 
-const publicRoutes = [authRoutes, userRoutes, roleRoutes];
-
-const privateRoutes = [
+const publicRoutes = [
+  authRoutes,
   // userRoutes,
-  // roleRoutes,
-  expenseRoutes,
+  // roleRoutes
 ];
+
+const privateRoutes = [userRoutes, roleRoutes, expenseRoutes];
 
 publicRoutes.forEach((route) => {
   router.use("/api", route, errorHandler);
