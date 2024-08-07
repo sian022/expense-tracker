@@ -35,9 +35,11 @@ const User = sequelize.define("User", {
 // Assosiations
 User.belongsTo(Role, {
   foreignKey: "roleId",
+  as: "role",
 });
 Role.hasMany(User, {
   foreignKey: "roleId",
+  as: "users",
 });
 
 // Bcrypt the password before saving the user

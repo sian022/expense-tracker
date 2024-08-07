@@ -6,6 +6,7 @@ const sequelize = require("./config/db");
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(routes);
 
 const PORT = process.env.PORT || 5214;
